@@ -127,6 +127,8 @@
   <ItemGroup>
     <Compile Include="ElementContent.cs" />
     <Compile Include="GeneralUtils.cs" />
+    <Compile Include="HtmlEventEx.cs" />
+    <Compile Include="HtmlEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

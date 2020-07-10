@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Windows;
 
 namespace SMAUsefulFunctions
 {
@@ -81,6 +82,27 @@ namespace SMAUsefulFunctions
             var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
             var htmlCtrl = ctrlGroup?.FocusedControl?.AsHtml();
             return htmlCtrl?.GetDocument();
+
+        }
+
+
+        /// <summary>
+        /// Get the IHTMLWindow2 object for the currently focused HtmlControl
+        /// </summary>
+        /// <returns>IHTMLWindow2 object or null</returns>
+        public static IHTMLWindow2 GetFocusedHtmlWindow()
+        {
+
+            var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
+            var htmlCtrl = ctrlGroup?.FocusedControl?.AsHtml();
+            var htmlDoc = htmlCtrl?.GetDocument();
+            if (htmlDoc == null)
+                return null;
+
+            return Application.Current.Dispatcher.Invoke(() =>
+            {
+                return htmlDoc.parentWindow;
+            });
 
         }
 
