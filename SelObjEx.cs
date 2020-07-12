@@ -1,117 +1,51 @@
 ﻿using HtmlAgilityPack;
 using mshtml;
-using SuperMemoAssistant.Extensions;
-using SuperMemoAssistant.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Windows;
 
 namespace SMAUsefulFunctions
 {
-    public static class ElementContent
+    public static class SelObjEx
     {
 
-        /// <summary>
-        /// Get the selection object representing the currently highlighted text in SM.
-        /// </summary>
-        /// <returns>IHTMLTxtRange object or null</returns>
-        public static IHTMLTxtRange GetSelectionObject()
+        public static string GetLastPartialWord(this IHTMLTxtRange selObj)
         {
 
-            var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
-            var htmlCtrl = ctrlGroup?.FocusedControl?.AsHtml();
-            var htmlDoc = htmlCtrl?.GetDocument();
-            var sel = htmlDoc?.selection;
-
-            if (!(sel?.createRange() is IHTMLTxtRange textSel))
+            if (selObj == null)
                 return null;
 
-            return textSel;
+            var duplicate = selObj.duplicate();
 
-        }
-
-        /// <summary>
-        /// Get a mapping from control index to html document for each IHtmlControl
-        /// in the current element
-        /// </summary>
-        /// <returns></returns>
-        public static Dictionary<int, IHTMLDocument2> GetAllHtmlDocuments()
-        {
-
-            var result = new Dictionary<int, IHTMLDocument2>();
-            var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
-
-            for (int i = 0; i < ctrlGroup.Count; i++)
+            bool found = false;
+            while (duplicate.moveStart("character", -1) == -1)
             {
 
-                var htmlCtrl = ctrlGroup[i]?.AsHtml();
-                var htmlDoc = htmlCtrl?.GetDocument();
-                if (htmlDoc != null)
-                    result[i] = htmlDoc;
+                if (string.IsNullOrEmpty(duplicate.text))
+                    return null;
+
+                if (char.IsWhiteSpace(selObj.text.First()))
+                {
+                    found = true;
+                    break;
+                }
 
             }
 
-            return result;
+            return selObj.text;
 
         }
-
-        /// <summary>
-        /// Get the IHTMLDocument2 object representing the first html control of the current element.
-        /// </summary>
-        /// <returns>IHTMLDocument2 object or null</returns>
-        public static IHTMLDocument2 GetFirstHtmlDocument()
-        {
-
-            var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
-            var htmlCtrl = ctrlGroup?.GetFirstHtmlControl()?.AsHtml();
-            return htmlCtrl?.GetDocument();
-
-        }
-
-        /// <summary>
-        /// Get the IHTMLDocument2 object representing the focused html control of the current element.
-        /// </summary>
-        /// <returns>IHTMLDocument2 object or null</returns>
-        public static IHTMLDocument2 GetFocusedHtmlDocument()
-        {
-
-            var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
-            var htmlCtrl = ctrlGroup?.FocusedControl?.AsHtml();
-            return htmlCtrl?.GetDocument();
-
-        }
-
-        /// <summary>
-        /// Get the IHTMLWindow2 object for the currently focused HtmlControl
-        /// </summary>
-        /// <returns>IHTMLWindow2 object or null</returns>
-        public static IHTMLWindow2 GetFocusedHtmlWindow()
-        {
-
-            var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
-            var htmlCtrl = ctrlGroup?.FocusedControl?.AsHtml();
-            var htmlDoc = htmlCtrl?.GetDocument();
-            if (htmlDoc == null)
-                return null;
-
-            return Application.Current.Dispatcher.Invoke(() =>
-            {
-                return htmlDoc.parentWindow;
-            });
-
-        }
-
+       
         /// <summary>
         /// Get the end index of the selection object as an inner text index.
         /// NOTE: Counts \r\n incorrectly.
         /// </summary>
         /// <param name="selObj"></param>
         /// <returns>index or -1</returns>
-        public static int GetSelectionTextEndIdx(IHTMLTxtRange selObj)
+        public static int GetSelectionTextEndIdx(this IHTMLTxtRange selObj)
         {
 
             int MaxTextLength = 2000000000;
@@ -131,7 +65,7 @@ namespace SMAUsefulFunctions
         /// </summary>
         /// <param name="selObj"></param>
         /// <returns>index or -1</returns>
-        public static int GetSelectionTextStartIdx(IHTMLTxtRange selObj)
+        public static int GetSelectionTextStartIdx(this IHTMLTxtRange selObj)
         {
 
             int MaxTextLength = 2000000000;
