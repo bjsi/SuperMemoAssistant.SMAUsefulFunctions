@@ -19,7 +19,7 @@ namespace SMAUsefulFunctions
         /// Get the selection object representing the currently highlighted text in SM.
         /// </summary>
         /// <returns>IHTMLTxtRange object or null</returns>
-        public static IHTMLTxtRange GetSelectionObject()
+        public static IHTMLTxtRange GetTextSelectionObject()
         {
 
             var ctrlGroup = Svc.SM.UI.ElementWdw.ControlGroup;
