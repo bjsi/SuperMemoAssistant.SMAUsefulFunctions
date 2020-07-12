@@ -35,7 +35,7 @@ namespace SMAUsefulFunctions
 
             }
 
-            return selObj.text;
+            return found ? selObj.text : null;
 
         }
        
