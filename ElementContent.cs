@@ -98,10 +98,7 @@ namespace SMAUsefulFunctions
             if (htmlDoc == null)
                 return null;
 
-            return Application.Current.Dispatcher.Invoke(() =>
-            {
-                return htmlDoc.parentWindow;
-            });
+            return Application.Current.Dispatcher.Invoke(() => htmlDoc.parentWindow);
 
         }
 
